@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ChronoCrack</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <h1>Chrono<span>Crack</span></h1>
+    <p class="tag">Recuperacao de chave AES-256 semeada pelo relogio &mdash; AES/CTR com PRNG do tempo Unix</p>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>1 &middot; Mensagem intercetada</h2>
+      <label>Base64( IV &#124;&#124; criptograma )</label>
+      <textarea id="message" rows="5" spellcheck="false">{{ sample_message }}</textarea>
+
+      <div class="grid">
+        <div>
+          <label>Inicio (tempo Unix, s)</label>
+          <input id="lo" type="number" value="{{ default_lo }}">
+        </div>
+        <div>
+          <label>Fim (tempo Unix, s)</label>
+          <input id="hi" type="number" value="{{ default_hi }}">
+        </div>
+        <div>
+          <label>Prefixo conhecido (crib)</label>
+          <input id="crib" type="text" value="{{ default_crib }}">
+        </div>
+      </div>
+
+      <div class="rangeinfo" id="rangeinfo"></div>
+      <button id="run">Iniciar ataque</button>
+    </section>
+
+    <section class="panel">
+      <h2>2 &middot; Estrutura da mensagem</h2>
+      <div class="split">
+        <div class="chunk iv"><span class="k">IV / nonce (16 bytes)</span><code id="ivhex">&mdash;</code></div>
+        <div class="chunk ct"><span class="k">Criptograma</span><code id="ctinfo">&mdash;</code></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>3 &middot; Procura do seed</h2>
+      <div class="progwrap">
+        <div class="bar"><div class="fill" id="fill"></div></div>
+        <div class="stats">
+          <span id="counter">0 / 0</span>
+          <span id="rate"></span>
+          <span id="timer">0.00 s</span>
+        </div>
+      </div>
+      <p class="hint">O espaco de chaves do AES-256 tem 2<sup>256</sup> valores. Aqui a chave depende so do segundo de envio, por isso o espaco efetivo reduz-se ao numero de segundos do intervalo.</p>
+    </section>
+
+    <section class="panel result" id="resultPanel" hidden>
+      <h2>4 &middot; Chave recuperada</h2>
+      <div class="kv"><span>Seed (tempo Unix)</span><code id="rseed"></code></div>
+      <div class="kv"><span>Instante do envio</span><code id="rutc"></code></div>
+      <div class="kv"><span>Chave AES-256</span><code id="rkey" class="key"></code></div>
+      <div class="kv"><span>Tentativas</span><code id="rtried"></code></div>
+      <h3>Texto em claro</h3>
+      <pre id="plaintext"></pre>
+    </section>
+
+    <section class="panel" id="benchPanel">
+      <h2>5 &middot; Comparação académica: e se a janela fosse maior?</h2>
+      <p class="hint">O custo da força bruta cresce <strong>linearmente</strong> com o número de
+        segundos da janela de incerteza. Alargar de um dia para um ano mantém o
+        problema trivial face aos 2<sup>256</sup> do AES-256.</p>
+      <button id="runBench">Comparar dia / semana / mês / ano</button>
+      <div id="benchResult" hidden>
+        <table class="bench">
+          <thead>
+            <tr><th>Janela</th><th>Seeds</th><th>Varrer tudo</th><th>Encontrar (média)</th><th class="barcol">Escala</th></tr>
+          </thead>
+          <tbody id="benchBody"></tbody>
+        </table>
+        <p class="hint" id="benchNote"></p>
+      </div>
+    </section>
+
+    <section class="panel error" id="errorPanel" hidden>
+      <h2>Erro</h2>
+      <pre id="errmsg"></pre>
+    </section>
+  </main>
+
+  <footer>
+    ChronoCrack &middot; prototipo didatico &middot; a falha e usar <code>random.seed(tempo)</code> em vez de um CSPRNG
+  </footer>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

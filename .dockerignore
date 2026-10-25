@@ -1,0 +1,11 @@
+.git
+.gitignore
+.env
+.env.example
+README.md
+enunciado.txt
+template-iscte/
+**/__pycache__/
+**/*.pyc
+.venv/
+venv/

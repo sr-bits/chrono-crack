@@ -1,0 +1,30 @@
+Um grupo terrorista está a usar um software de troca de mensagens recorrendo a criptografia de chave simétrica para coordenar as suas operações. As forças de segurança não estão a conseguir interpretar as comunicações intercetadas, porque os atacantes estão a usar um mecanismo criptográfico forte.
+
+Entretanto as autoridades resolvem recorrer a um especialista em cibersegurança (vocês) para tentar resolver este problema.
+
+Os serviços de informações estão convencidos que uma das mensagens que conseguiram intercetar contém informação sobre um atentado planeado contra a Assembleia da República, incluindo o rapto de um conjunto de ministros e deputados, assim como a data e o local de concentração dos elementos do grupo. É de importância vital que as autoridades consigam ter acesso a esta informação para que possam montar uma operação de prevenção e proteção que impeça o ataque.
+
+Há alguns tipos de informação a que as autoridades tiveram acesso, através de informadores internos:
+
+O software de troca de mensagens funciona com base no algoritmo AES, em modo CTR, com chaves de 256 bits;
+A mensagem cifrada é construída da seguinte forma: ao criptograma é anteposto, em claro, o vetor de inicialização (IV/nonce) de 16 bytes usado no modo CTR; o conjunto resultante (IV || criptograma) é depois codificado em Base64;
+A mensagem começa com a seguinte frase "Ponto de encontro:", no entanto a restante mensagem é desconhecida;
+O software foi escrito em Python e, por limitações de implementação, não gera a chave de 256 bits a partir de uma fonte de aleatoriedade segura. Em vez disso, no instante do envio, o software executa o equivalente a:
+import random
+random.seed(T)            # T = tempo Unix, em segundos, do instante do envio
+key = random.randbytes(32)   # chave AES de 256 bits
+ou seja, a chave é totalmente determinada pelo relógio do sistema (gerador pseudo-aleatório padrão do Python — Mersenne Twister — semeado com o tempo Unix em segundos);
+As autoridades sabem, a partir dos metadados da interceção, que esta mensagem foi enviada no dia 12 de novembro de 2025, algures entre as 00:00:00 e as 23:59:59 (hora de Lisboa). Em tempo Unix (segundos), isto corresponde ao intervalo [1762905600, 1762991999] (inclusive);
+A mensagem cifrada e codificada em Base64 é a seguinte:
+ht1XeG5JhC5ch2+6PO4OlFZk1MZLGSFV/qPi+i+a2q0c6mKyvknVrB9QTHu5aibmaYJw2W+7KoeHyOk7XhvDjZG9h07Si3Jaif2lzfs2CITmi3BHFaeT5NgKTEGB1rLB60ZBsF9XW8fLW+ZMbG1s149mF8tsubwq1zUkfgwSIuCN7UdoKyooNiEyyKdSOCnJ29NlvSoDTab4+nSTqrX2ALbejBfG34QWk7NwtW+XdYRYoicrLgFrl75h2qwfBcTCrTrMczeTy533n2gL0XoLgB2hPV+rBLseqfnLCS92wxiD29bJ5EtwX8ff1THxFk514A==
+As autoridades pretendem que, enquanto especialista de cibersegurança, consiga responder às seguintes questões:
+
+Quais as abordagens possíveis para resolver este problema das autoridades, e em sua opinião qual seria a mais eficiente e realista? Justifique, nomeadamente, por que razão a força do algoritmo AES-256 não torna esta mensagem invulnerável neste caso concreto.
+Tendo em consideração a sua resposta anterior, desenhe e construa um protótipo que permita implementar a abordagem proposta no ponto anterior, recuperando a mensagem original em claro.
+Devem entregar um relatório e o respetivo protótipo, que explique detalhadamente a abordagem seguida, assim como todos os detalhes necessários para que as forças de segurança possam usar a solução proposta de uma forma útil. O relatório deve ainda indicar qual a falha de implementação que tornou o sistema vulnerável e que correção recomendariam aos responsáveis por um sistema deste tipo.
+
+Este trabalho deve ser realizado individualmente.
+
+Prazo de entrega: até ao próximo dia 31 de outubro (23h59).
+
+Boa sorte!

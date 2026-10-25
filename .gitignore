@@ -1,0 +1,15 @@
+# Segredos e ambiente
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Relatorio LaTeX: pasta inteira fora do repositorio (backup noutro sitio, ex. Overleaf)
+template-iscte/
+
+# Editores
+.vscode/
+.idea/
